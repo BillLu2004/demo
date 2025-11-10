@@ -1,25 +1,59 @@
-[HOW_TO_RUN.md](https://github.com/user-attachments/files/23444761/HOW_TO_RUN.md)
+[HOW_TO_RUN.md](https://github.com/user-attachments/files/23444782/HOW_TO_RUN.md)
 # 如何在本地运行此全栈应用
 
 本文档将指导您如何在本地计算机上成功设置并同时运行本项目的**前端**和**后端**服务。
 
 ## 1. 环境要求 (Prerequisites)
 
-在开始之前，请确保您的计算机上已安装以下软件：
-
-- **[Node.js](https://nodejs.org/)**: 用于运行前端项目。推荐 `v18.x` 或 `v20.x` LTS 版本。
-- **[Python](https://www.python.org/)**: 用于运行后端项目。推荐 `3.10` 或更高版本。
+- **[Node.js](https://nodejs.org/)**: `v18.x` 或 `v20.x` LTS 版本。
+- **[Python](https://www.python.org/)**: `3.10` 或更高版本。
 - **[PostgreSQL](https://www.postgresql.org/)**: 本项目使用的数据库。
-
-**重要**: 请确保您的 PostgreSQL 数据库中包含一个名为 `mybank1` 的数据库，并且有一个用户名为 `postgres`、密码为 `123456` 的用户可以访问它。如果您的数据库配置不同，请在启动后端前，先修改 `backend/bank_project/settings.py` 文件中的 `DATABASES` 配置。
-
-## 2. 操作步骤
-
-您需要打开 **两个** 独立的终端（或命令行窗口），一个用于后端，一个用于前端。
 
 ---
 
-### 终端一：启动后端 (Django)
+## 2. 数据库配置详解 (非常重要)
+
+在启动后端服务之前，您**必须**在您的计算机上配置好本地数据库。后端服务需要连接到一个真实运行的 PostgreSQL 数据库才能工作。
+
+**a. 确保 PostgreSQL 已安装并运行**
+
+请确保您已在本地安装了 PostgreSQL，并且它的服务正在运行中。
+
+**b. 创建数据库 (如果不存在)**
+
+您需要一个专门为本项目使用的数据库。推荐的数据库名叫 `mybank1`。您可以使用 `pgAdmin` 或其他数据库工具执行以下 SQL 命令来创建它：
+
+```sql
+CREATE DATABASE mybank1;
+```
+
+**c. 准备数据库用户信息**
+
+您需要一个可以访问 `mybank1` 数据库的用户名和密码。您可以直接使用安装 PostgreSQL 时创建的默认 `postgres` 超级用户，也可以为本项目创建一个专用的新用户。
+
+**d. 配置 `.env` 文件**
+
+这是最关键的一步。本项目的后端使用 `.env` 文件来管理数据库连接信息，以避免将密码等敏感信息直接写入代码。
+
+1.  在 `backend` 目录下，找到一个名为 `.env.example` 的模板文件。
+2.  **复制**这个文件，并在**同一目录**下创建一个名为 `.env` 的新文件。
+3.  **打开并编辑**您刚刚创建的 `.env` 文件，将其中的值修改为您**自己本地**的数据库配置。
+
+**示例 `.env` 文件内容：**
+```ini
+# PostgreSQL Database Configuration
+DB_NAME=mybank1                 # 您的数据库名
+DB_USER=your_postgres_username  # 您的 PostgreSQL 用户名
+DB_PASSWORD=your_password       # 您设置的密码
+DB_HOST=localhost               # 通常保持 localhost 不变
+DB_PORT=5432                    # 通常保持 5432 不变
+```
+
+**只有正确完成了这一步，后续的后端服务才能成功启动。**
+
+---
+
+## 3. 后端 (Django) 启动步骤
 
 **a. 进入后端目录**
 
